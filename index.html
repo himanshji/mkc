@@ -2,53 +2,58 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine 💖</title>
 
 <style>
 *{
   margin:0;
   padding:0;
+  box-sizing:border-box;
   font-family: Arial, sans-serif;
 }
 
 body{
-  height:100vh;
-  background:#ffd6e8;
+  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
+  background:#ffd6e8;
   overflow:hidden;
 }
 
 .card{
   background:#fff;
-  padding:30px;
-  border-radius:15px;
+  padding:25px;
+  border-radius:18px;
   text-align:center;
+  width:90%;
+  max-width:320px;
   box-shadow:0 10px 25px rgba(0,0,0,0.2);
-  position:relative;
-  z-index:2;
 }
 
-.card img{
-  width:120px;
+.card img, .success-img {
+  width:150px; /* Thoda bada dikhne ke liye width change ki hai */
+  border-radius: 10px;
   margin-bottom:15px;
 }
 
 h2{
   margin-bottom:20px;
+  font-size:20px;
 }
 
 .buttons{
   display:flex;
   justify-content:center;
-  gap:20px;
+  gap:15px;
+  flex-wrap:wrap;
 }
 
 button{
-  padding:10px 25px;
+  padding:12px 28px;
   border:none;
-  border-radius:20px;
+  border-radius:25px;
   font-size:16px;
   cursor:pointer;
 }
@@ -56,40 +61,38 @@ button{
 #yes{
   background:#ff4d6d;
   color:white;
+  animation:pulse 1.2s infinite;
 }
 
 #no{
   background:#ccc;
+  position:relative;
 }
 
-/* ❤️ Hearts animation */
+/* YES BUTTON PULSE */
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.1);}
+  100%{transform:scale(1);}
+}
+
+/* HEARTS */
 .heart{
   position:fixed;
   bottom:-20px;
   font-size:24px;
-  animation: floatUp 4s linear forwards;
+  animation:float 4s linear forwards;
 }
 
-@keyframes floatUp{
-  from{
-    transform:translateY(0);
+@keyframes float{
+  0%{
+    transform:translateY(0) scale(1);
     opacity:1;
   }
-  to{
-    transform:translateY(-100vh);
+  100%{
+    transform:translateY(-110vh) scale(1.5);
     opacity:0;
   }
-}
-
-/* 🟣 Bounce effect */
-.bounce{
-  animation: bounce 0.4s ease;
-}
-
-@keyframes bounce{
-  0%{transform:scale(1);}
-  50%{transform:scale(1.2);}
-  100%{transform:scale(1);}
 }
 </style>
 </head>
@@ -97,7 +100,7 @@ button{
 <body>
 
 <div class="card">
-  <img src="https://i.imgur.com/4AiXzf8.png" alt="bear">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX1dUjrCy3flR-P5pTbSAL5eu1fUQNbHEH5A&s" alt="valentine">
   <h2>Will you be my Valentine? 💕</h2>
 
   <div class="buttons">
@@ -107,65 +110,52 @@ button{
 </div>
 
 <script>
-const yesBtn = document.getElementById("yes");
 const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
 
-function moveYesButton() {
-  yesBtn.style.position = "fixed";
-
-  const btnW = yesBtn.offsetWidth;
-  const btnH = yesBtn.offsetHeight;
-  const padding = 20;
-
-  const maxX = window.innerWidth - btnW - padding;
-  const maxY = window.innerHeight - btnH - padding;
-
-  yesBtn.style.left = Math.random() * maxX + "px";
-  yesBtn.style.top  = Math.random() * maxY + "px";
-
-  // bounce animation
-  yesBtn.classList.remove("bounce");
-  void yesBtn.offsetWidth;
-  yesBtn.classList.add("bounce");
-
-  // mobile vibration
-  if (navigator.vibrate) {
-    navigator.vibrate(80);
-  }
-}
-
-// Desktop
-yesBtn.addEventListener("mouseenter", moveYesButton);
-
-// Mobile
-yesBtn.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  moveYesButton();
+/* NO BUTTON ESCAPE */
+noBtn.addEventListener("mouseover", () => {
+  const x = Math.random() * (window.innerWidth - 100);
+  const y = Math.random() * (window.innerHeight - 50);
+  noBtn.style.position = "absolute";
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
 });
 
-// ❤️ Hearts generator
-function createHearts() {
-  for(let i=0;i<25;i++){
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤️";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = (2 + Math.random()*3) + "s";
-    document.body.appendChild(heart);
+/* HEART CREATOR */
+function createHeart(){
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerHTML = "💖";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (Math.random()*2 + 3) + "s";
+  document.body.appendChild(heart);
 
-    setTimeout(()=>heart.remove(),4000);
-  }
+  setTimeout(()=>heart.remove(),5000);
 }
 
-// NO = success
-noBtn.addEventListener("click", () => {
-  document.body.innerHTML = `
-    <div style="text-align:center">
-      <h1>YAY!!! 💖🥰</h1>
-      <p>You said YES!</p>
-    </div>
-  `;
-  createHearts();
+/* YES CLICK */
+yesBtn.addEventListener("click", () => {
+
+  /* 📳 VIBRATION (mobile) */
+  if(navigator.vibrate){
+    navigator.vibrate([100,50,100]);
+  }
+
+  /* 💖 HEART RAIN */
+  for(let i=0;i<20;i++){
+    setTimeout(createHeart, i*150);
+  }
+
+  setTimeout(()=>{
+    document.body.innerHTML = `
+      <div style="text-align:center">
+        <img src="https://mooddp.com/wp-content/uploads/2025/10/pookie-cat-dp-for-instagram.jpg" class="success-img" alt="Pookie Cat">
+        <h1 style="color: #ff4d6d;">YAY!!! 💖🥰</h1>
+        <p style="font-size: 1.2rem;">You said YES!</p>
+      </div>
+    `;
+  },1200);
 });
 </script>
 
