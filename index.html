@@ -33,9 +33,21 @@ body{
 }
 
 .card img, .success-img {
-  width:150px; /* Thoda bada dikhne ke liye width change ki hai */
+  width:150px;
   border-radius: 10px;
   margin-bottom:15px;
+}
+
+/* NAME INPUT STYLE */
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 2px solid #ff4d6d;
+  border-radius: 10px;
+  outline: none;
+  text-align: center;
+  font-size: 16px;
 }
 
 h2{
@@ -69,14 +81,12 @@ button{
   position:relative;
 }
 
-/* YES BUTTON PULSE */
 @keyframes pulse{
   0%{transform:scale(1);}
   50%{transform:scale(1.1);}
   100%{transform:scale(1);}
 }
 
-/* HEARTS */
 .heart{
   position:fixed;
   bottom:-20px;
@@ -100,7 +110,10 @@ button{
 <body>
 
 <div class="card">
-  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX1dUjrCy3flR-P5pTbSAL5eu1fUQNbHEH5A&s" alt="valentine">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG3lfMOpNq0uh7wbVh3ER14gQdTt_ydu1zfQ&s" alt="valentine">
+  
+  <input type="text" id="userName" class="input-field" placeholder="Apna Naam Likho ✨">
+
   <h2>Will you be my Valentine? 💕</h2>
 
   <div class="buttons">
@@ -112,6 +125,7 @@ button{
 <script>
 const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
+const nameInput = document.getElementById("userName");
 
 /* NO BUTTON ESCAPE */
 noBtn.addEventListener("mouseover", () => {
@@ -136,13 +150,14 @@ function createHeart(){
 
 /* YES CLICK */
 yesBtn.addEventListener("click", () => {
+  // Get Name
+  const name = nameInput.value.trim() || "Pookie";
 
-  /* 📳 VIBRATION (mobile) */
   if(navigator.vibrate){
     navigator.vibrate([100,50,100]);
   }
 
-  /* 💖 HEART RAIN */
+  /* HEART RAIN */
   for(let i=0;i<20;i++){
     setTimeout(createHeart, i*150);
   }
@@ -152,7 +167,7 @@ yesBtn.addEventListener("click", () => {
       <div style="text-align:center">
         <img src="https://mooddp.com/wp-content/uploads/2025/10/pookie-cat-dp-for-instagram.jpg" class="success-img" alt="Pookie Cat">
         <h1 style="color: #ff4d6d;">YAY!!! 💖🥰</h1>
-        <p style="font-size: 1.2rem;">You said YES!</p>
+        <p style="font-size: 1.5rem; margin-top: 10px;"><strong>${name}</strong> said YES!</p>
       </div>
     `;
   },1200);
