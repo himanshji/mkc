@@ -61,6 +61,36 @@ button{
 #no{
   background:#ccc;
 }
+
+/* ❤️ Hearts animation */
+.heart{
+  position:fixed;
+  bottom:-20px;
+  font-size:24px;
+  animation: floatUp 4s linear forwards;
+}
+
+@keyframes floatUp{
+  from{
+    transform:translateY(0);
+    opacity:1;
+  }
+  to{
+    transform:translateY(-100vh);
+    opacity:0;
+  }
+}
+
+/* 🟣 Bounce effect */
+.bounce{
+  animation: bounce 0.4s ease;
+}
+
+@keyframes bounce{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.2);}
+  100%{transform:scale(1);}
+}
 </style>
 </head>
 
@@ -81,22 +111,27 @@ const yesBtn = document.getElementById("yes");
 const noBtn = document.getElementById("no");
 
 function moveYesButton() {
-  // absolute to viewport
   yesBtn.style.position = "fixed";
 
   const btnW = yesBtn.offsetWidth;
   const btnH = yesBtn.offsetHeight;
-
   const padding = 20;
 
   const maxX = window.innerWidth - btnW - padding;
   const maxY = window.innerHeight - btnH - padding;
 
-  const x = Math.random() * maxX;
-  const y = Math.random() * maxY;
+  yesBtn.style.left = Math.random() * maxX + "px";
+  yesBtn.style.top  = Math.random() * maxY + "px";
 
-  yesBtn.style.left = x + "px";
-  yesBtn.style.top = y + "px";
+  // bounce animation
+  yesBtn.classList.remove("bounce");
+  void yesBtn.offsetWidth;
+  yesBtn.classList.add("bounce");
+
+  // mobile vibration
+  if (navigator.vibrate) {
+    navigator.vibrate(80);
+  }
 }
 
 // Desktop
@@ -108,7 +143,21 @@ yesBtn.addEventListener("touchstart", (e) => {
   moveYesButton();
 });
 
-// NO = success ❤️
+// ❤️ Hearts generator
+function createHearts() {
+  for(let i=0;i<25;i++){
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (2 + Math.random()*3) + "s";
+    document.body.appendChild(heart);
+
+    setTimeout(()=>heart.remove(),4000);
+  }
+}
+
+// NO = success
 noBtn.addEventListener("click", () => {
   document.body.innerHTML = `
     <div style="text-align:center">
@@ -116,6 +165,7 @@ noBtn.addEventListener("click", () => {
       <p>You said YES!</p>
     </div>
   `;
+  createHearts();
 });
 </script>
 
