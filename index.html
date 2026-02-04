@@ -32,22 +32,10 @@ body{
   box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
-.card img, .success-img {
+.card img, .success-img{
   width:150px;
-  border-radius: 10px;
+  border-radius:10px;
   margin-bottom:15px;
-}
-
-/* NAME INPUT STYLE */
-.input-field {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 2px solid #ff4d6d;
-  border-radius: 10px;
-  outline: none;
-  text-align: center;
-  font-size: 16px;
 }
 
 h2{
@@ -55,30 +43,39 @@ h2{
   font-size:20px;
 }
 
+/* BUTTON AREA */
 .buttons{
   display:flex;
-  justify-content:center;
-  gap:15px;
-  flex-wrap:wrap;
+  justify-content:space-between;
+  padding:0 10px;
 }
 
+/* SAME SIZE BUTTONS */
 button{
-  padding:12px 28px;
+  width:120px;
+  height:44px;
   border:none;
   border-radius:25px;
   font-size:16px;
   cursor:pointer;
 }
 
+/* YES */
 #yes{
   background:#ff4d6d;
   color:white;
   animation:pulse 1.2s infinite;
 }
 
+/* NO */
 #no{
   background:#ccc;
+  transition:left 0.35s ease, top 0.35s ease, transform 0.2s ease;
   position:relative;
+}
+
+#no:hover{
+  transform:scale(1.05);
 }
 
 @keyframes pulse{
@@ -87,6 +84,7 @@ button{
   100%{transform:scale(1);}
 }
 
+/* ❤️ FLOATING HEARTS */
 .heart{
   position:fixed;
   bottom:-20px;
@@ -95,14 +93,8 @@ button{
 }
 
 @keyframes float{
-  0%{
-    transform:translateY(0) scale(1);
-    opacity:1;
-  }
-  100%{
-    transform:translateY(-110vh) scale(1.5);
-    opacity:0;
-  }
+  0%{transform:translateY(0) scale(1);opacity:1;}
+  100%{transform:translateY(-110vh) scale(1.5);opacity:0;}
 }
 </style>
 </head>
@@ -110,10 +102,7 @@ button{
 <body>
 
 <div class="card">
-  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG3lfMOpNq0uh7wbVh3ER14gQdTt_ydu1zfQ&s" alt="valentine">
-  
-  <input type="text" id="userName" class="input-field" placeholder="Apna Naam Likho ✨">
-
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG3lfMOpNq0uh7wbVh3ER14gQdTt_ydu1zfQ&s">
   <h2>Will you be my Valentine? 💕</h2>
 
   <div class="buttons">
@@ -123,54 +112,69 @@ button{
 </div>
 
 <script>
-const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
-const nameInput = document.getElementById("userName");
+const noBtn  = document.getElementById("no");
 
-/* NO BUTTON ESCAPE */
-noBtn.addEventListener("mouseover", () => {
-  const x = Math.random() * (window.innerWidth - 100);
-  const y = Math.random() * (window.innerHeight - 50);
-  noBtn.style.position = "absolute";
-  noBtn.style.left = x + "px";
-  noBtn.style.top = y + "px";
+/* ❤️ HEART CREATOR */
+function createHeart(){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💖";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=(Math.random()*2+3)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),5000);
+}
+
+/* 💔 NO BUTTON FREE ROAM */
+function moveNo(){
+  noBtn.style.position="fixed";
+
+  const padding=10;
+  const maxX=window.innerWidth-noBtn.offsetWidth-padding;
+  const maxY=window.innerHeight-noBtn.offsetHeight-padding;
+
+  noBtn.style.left=Math.random()*maxX+"px";
+  noBtn.style.top=Math.random()*maxY+"px";
+
+  if(navigator.vibrate){
+    navigator.vibrate(40);
+  }
+}
+
+noBtn.addEventListener("mouseenter", moveNo);
+noBtn.addEventListener("touchstart", e=>{
+  e.preventDefault();
+  moveNo();
 });
 
-/* HEART CREATOR */
-function createHeart(){
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerHTML = "💖";
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = (Math.random()*2 + 3) + "s";
-  document.body.appendChild(heart);
-
-  setTimeout(()=>heart.remove(),5000);
+/* ❤️📳 HEARTBEAT VIBRATION */
+function heartBeatVibration(){
+  if(navigator.vibrate){
+    navigator.vibrate([
+      120, 80,   // dhak
+      120, 300,  // dhak + pause
+      120, 80,   // dhak
+      120
+    ]);
+  }
 }
 
 /* YES CLICK */
-yesBtn.addEventListener("click", () => {
-  // Get Name
-  const name = nameInput.value.trim() || "Pookie";
+yesBtn.addEventListener("click", ()=>{
+  heartBeatVibration();   // ❤️📳 heartbeat
 
-  if(navigator.vibrate){
-    navigator.vibrate([100,50,100]);
+  for(let i=0;i<15;i++){
+    setTimeout(createHeart,i*120);
   }
 
-  /* HEART RAIN */
-  for(let i=0;i<20;i++){
-    setTimeout(createHeart, i*150);
-  }
-
-  setTimeout(()=>{
-    document.body.innerHTML = `
-      <div style="text-align:center">
-        <img src="https://mooddp.com/wp-content/uploads/2025/10/pookie-cat-dp-for-instagram.jpg" class="success-img" alt="Pookie Cat">
-        <h1 style="color: #ff4d6d;">YAY!!! 💖🥰</h1>
-        <p style="font-size: 1.5rem; margin-top: 10px;"><strong>${name}</strong> said YES!</p>
-      </div>
-    `;
-  },1200);
+  document.body.innerHTML=`
+    <div class="card">
+      <img src="https://mooddp.com/wp-content/uploads/2025/10/pookie-cat-dp-for-instagram.jpg" class="success-img">
+      <h1 style="color:#ff4d6d">YAY!!! 💖🥰</h1>
+      <p style="font-size:1.4rem;margin-top:10px">She said YES!</p>
+    </div>
+  `;
 });
 </script>
 
