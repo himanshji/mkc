@@ -22,7 +22,7 @@ body{
   overflow:hidden;
 }
 
-/* SHAKE WRAPPER */
+/* WRAPPER FOR SHAKE */
 .wrapper{
   width:100%;
   height:100%;
@@ -31,16 +31,16 @@ body{
   align-items:center;
 }
 
-/* SOFT SHAKE ANIMATION */
+/* EXTRA SOFT SHAKE */
 .shake{
-  animation:softShake 0.25s ease;
+  animation:softShake 0.35s ease;
 }
 
 @keyframes softShake{
   0%{transform:translate(0,0);}
-  25%{transform:translate(2px,-2px);}
-  50%{transform:translate(-2px,2px);}
-  75%{transform:translate(1px,-1px);}
+  25%{transform:translate(1px,-1px);}
+  50%{transform:translate(-1px,1px);}
+  75%{transform:translate(0.5px,-0.5px);}
   100%{transform:translate(0,0);}
 }
 
@@ -126,13 +126,13 @@ button{
   left:50%;
   transform:translate(-50%,-50%) scale(0);
   font-size:120px;
-  animation:pop 0.9s ease forwards;
+  animation:pop 1s ease forwards;
   z-index:999;
 }
 
 @keyframes pop{
   0%{transform:translate(-50%,-50%) scale(0); opacity:0;}
-  50%{transform:translate(-50%,-50%) scale(1.4); opacity:1;}
+  55%{transform:translate(-50%,-50%) scale(1.3); opacity:1;}
   100%{transform:translate(-50%,-50%) scale(1); opacity:0;}
 }
 </style>
@@ -157,7 +157,7 @@ const yesBtn = document.getElementById("yes");
 const noBtn  = document.getElementById("no");
 const wrapper = document.getElementById("wrapper");
 
-/* SMALL FLOATING HEART */
+/* FLOATING HEART */
 function createHeart(){
   const h=document.createElement("div");
   h.className="heart";
@@ -168,19 +168,16 @@ function createHeart(){
   setTimeout(()=>h.remove(),5000);
 }
 
-/* NO BUTTON ESCAPE */
+/* NO ESCAPE */
 function moveNo(){
   noBtn.style.position="fixed";
 
-  const padding=10;
-  const maxX=window.innerWidth-noBtn.offsetWidth-padding;
-  const maxY=window.innerHeight-noBtn.offsetHeight-padding;
-
-  noBtn.style.left=Math.random()*maxX+"px";
-  noBtn.style.top=Math.random()*maxY+"px";
+  const pad=10;
+  noBtn.style.left=Math.random()*(window.innerWidth-noBtn.offsetWidth-pad)+"px";
+  noBtn.style.top=Math.random()*(window.innerHeight-noBtn.offsetHeight-pad)+"px";
 
   if(navigator.vibrate){
-    navigator.vibrate(40);
+    navigator.vibrate(20); // very light
   }
 }
 
@@ -197,43 +194,43 @@ function screenShake(){
   wrapper.classList.add("shake");
 }
 
-/* ❤️📳 HEARTBEAT + SHAKE (gradually slow) */
-function slowHeartbeat(){
+/* ❤️📳 ULTRA SOFT HEARTBEAT */
+function softHeartbeat(){
   if(!navigator.vibrate) return;
 
   const beats = [
-    {pause:200},
-    {pause:350},
-    {pause:500},
-    {pause:650}
+    {v:[60], pause:180},
+    {v:[60], pause:260},
+    {v:[60], pause:340},
+    {v:[60], pause:420}
   ];
 
-  let time = 0;
+  let t = 0;
 
-  beats.forEach((b, i)=>{
+  beats.forEach((b)=>{
     setTimeout(()=>{
-      navigator.vibrate([120,80,120]);
+      navigator.vibrate(b.v);
       screenShake();
-    }, time);
-    time += 120 + 80 + 120 + b.pause;
+    }, t);
+    t += b.v[0] + b.pause;
   });
 
-  /* LAST BIG HEART POP */
+  /* LAST BIG HEART */
   setTimeout(()=>{
     const big=document.createElement("div");
     big.className="big-heart";
     big.innerHTML="❤️";
     document.body.appendChild(big);
-    setTimeout(()=>big.remove(),900);
-  }, time - 200);
+    setTimeout(()=>big.remove(),1000);
+  }, t - 150);
 }
 
 /* YES CLICK */
 yesBtn.addEventListener("click", ()=>{
-  slowHeartbeat();
+  softHeartbeat();
 
-  for(let i=0;i<15;i++){
-    setTimeout(createHeart,i*120);
+  for(let i=0;i<12;i++){
+    setTimeout(createHeart,i*140);
   }
 
   setTimeout(()=>{
@@ -244,7 +241,7 @@ yesBtn.addEventListener("click", ()=>{
         <p style="font-size:1.4rem;margin-top:10px">She said YES!</p>
       </div>
     `;
-  },1000);
+  },1100);
 });
 </script>
 
